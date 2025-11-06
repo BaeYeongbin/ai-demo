@@ -4,6 +4,7 @@ LLM 서비스 모듈 - OpenAI GPT API 사용
 import json
 import os
 import re
+
 from openai import OpenAI
 
 
@@ -19,7 +20,12 @@ class LLMService:
         if not self.api_key:
             raise ValueError("OPENAI_API_KEY가 설정되지 않았습니다.")
 
-        self.client = OpenAI(api_key=self.api_key)
+        # Streamlit Community Cloud 호환성을 위해 명시적으로 초기화
+        self.client = OpenAI(
+            api_key=self.api_key,
+            timeout=60.0,
+            max_retries=3
+        )
         self.model = "gpt-4.1-nano"
 
     def _extract_json(self, text):
